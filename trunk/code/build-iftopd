@@ -1,0 +1,45 @@
+#!/bin/sh
+
+. ./prepare
+
+PKGNAME=iftopd
+
+DIST0=.el6_3.12.6_iso_v1.0
+DIST1=.el6_3.12.6_iso_v1.3
+DIST3=.el6_3.12.6_iso_v1.8
+DIST4=.el6_han_3.12.6
+DIST=${DIST1}
+
+VER=1.1 
+
+echo ' Cleanning old source...'
+
+rm -fr $BUILDROOT/root/rpmbuild/BUILD/${PKGNAME}*
+
+echo ' Preparing source...'
+
+cp -r --preserve=links $SOURCEDIR/${PKGNAME} $BUILDROOT/root/rpmbuild/BUILD/${PKGNAME}-${VER}
+cp utils/${PKGNAME}.spec   $BUILDROOT/root/rpmbuild/SPECS/${PKGNAME}.spec
+cp utils/iftopdserv      $BUILDROOT/root/rpmbuild/SOURCES/iftopdserv
+
+for src in dummy         
+do
+    cp utils/$src $BUILDROOT/root/rpmbuild/SOURCES/
+done
+
+echo " Building ${PKGNAME}......"
+
+chroot $BUILDROOT rpmbuild -bb -D"Ver ${VER}" -D"dist ${DIST}" /root/rpmbuild/SPECS/${PKGNAME}.spec
+
+#rpmbuild -ba /root/rpmbuild/SPECS/${PKGNAME}.spec
+
+. ./finish
+
+mount -l |grep buildroot
+if [ "$?" = '0' ]; then
+    echo Warning, Some bind dir couldn\'t not be umounted, look by mount -l 
+fi 
+echo ' Finished!'
+
+
+
