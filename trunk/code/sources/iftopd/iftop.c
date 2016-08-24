@@ -795,7 +795,7 @@ int main(int argc, char **argv) {
     pthread_t thread;
     struct sigaction sa = {};
 	time_t timer_log;//time_t就是long int 类
-	struct tm *tblock =NULL;
+	struct tm *tblock =NULL;/*定义一个变量*/
 
 #if 1 
 
